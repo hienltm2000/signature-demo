@@ -1,156 +1,385 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ký tên chuẩn iPhone/iPad</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      margin-top: 40px;
-      background: #f8f9fa;
-    }
-    .signature-box {
-      border: 2px solid #aaa;
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      width: 400px;
-      height: 200px;
-      position: relative;
-    }
-    canvas {
-      width: 100%;
-      height: 100%;
-      cursor: crosshair;
-      border-radius: 8px;
-      touch-action: none; /* Ngăn scroll / zoom */
-    }
-    button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover { opacity: 0.9; }
-    .clear-btn { background: gray; }
-    .save-btn { background: #007bff; }
-    .control-panel { display: flex; align-items: center; gap: 12px; }
-    input[type="color"], input[type="range"] { cursor: pointer; }
-  </style>
-</head>
-<body>
-  <h2>Ký tên chuẩn iPhone/iPad</h2>
-  <div class="signature-box">
-    <canvas id="signature"></canvas>
-  </div>
-  <div class="control-panel">
-    <label>Màu bút: <input type="color" id="penColor" value="#000000"></label>
-    <label>Độ dày cơ bản: <input type="range" id="penWidth" min="1" max="10" value="2"></label>
-  </div>
-  <div>
-    <button class="clear-btn" id="clear">Xóa</button>
-    <button class="save-btn" id="save">Lưu ảnh</button>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ký tên đa nền tảng</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+      .container {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        width: 100%;
+      }
+      h2 {
+        margin: 0 0 20px 0;
+        text-align: center;
+        color: #333;
+        font-size: 24px;
+      }
+      .signature-box {
+        border: 3px solid #e0e0e0;
+        border-radius: 12px;
+        background: #fafafa;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        height: 300px;
+        position: relative;
+        margin-bottom: 20px;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+        cursor: crosshair;
+        border-radius: 12px;
+        touch-action: none;
+      }
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .control-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 150px;
+      }
+      .control-group label {
+        font-size: 14px;
+        color: #555;
+        white-space: nowrap;
+      }
+      input[type="color"] {
+        width: 50px;
+        height: 36px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        background: white;
+      }
+      input[type="range"] {
+        flex: 1;
+        cursor: pointer;
+        height: 6px;
+        border-radius: 3px;
+        background: #e0e0e0;
+        outline: none;
+        -webkit-appearance: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        flex: 1;
+        max-width: 150px;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      button:active {
+        transform: translateY(0);
+      }
+      .clear-btn {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+      .save-btn {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      .device-info {
+        text-align: center;
+        font-size: 12px;
+        color: #888;
+        margin-top: 8px;
+      }
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+        .container {
+          padding: 16px;
+        }
+        h2 {
+          font-size: 20px;
+        }
+        .signature-box {
+          height: 250px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>✍️ Ký tên đa nền tảng</h2>
+      <div class="signature-box">
+        <canvas id="signature"></canvas>
+      </div>
+      <div class="controls">
+        <div class="control-row">
+          <div class="control-group">
+            <label>Màu bút:</label>
+            <input type="color" id="penColor" value="#000000" />
+          </div>
+          <div class="control-group">
+            <label>Độ dày:</label>
+            <input type="range" id="penWidth" min="1" max="10" value="3" />
+            <span id="widthValue">3</span>
+          </div>
+        </div>
+        <div class="control-row">
+          <div class="control-group">
+            <label>Độ mượt:</label>
+            <input type="range" id="smoothness" min="1" max="10" value="5" />
+            <span id="smoothValue">5</span>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="clear-btn" id="clear">🗑️ Xóa</button>
+          <button class="save-btn" id="save">💾 Lưu ảnh</button>
+        </div>
+      </div>
+      <div class="device-info" id="deviceInfo">Đang tải...</div>
+    </div>
 
-  <script>
-    const canvas = document.getElementById("signature");
-    const ctx = canvas.getContext("2d");
-    const colorPicker = document.getElementById("penColor");
-    const widthPicker = document.getElementById("penWidth");
-    let isDrawing = false;
-    const points = [];
+    <script>
+      const canvas = document.getElementById("signature");
+      const ctx = canvas.getContext("2d");
+      const colorPicker = document.getElementById("penColor");
+      const widthPicker = document.getElementById("penWidth");
+      const smoothnessPicker = document.getElementById("smoothness");
+      const widthValue = document.getElementById("widthValue");
+      const smoothValue = document.getElementById("smoothValue");
+      const deviceInfo = document.getElementById("deviceInfo");
 
-    // Resize canvas theo devicePixelRatio
-    function resizeCanvas() {
-      const ratio = window.devicePixelRatio || 1;
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      ctx.scale(ratio, ratio);
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+      let isDrawing = false;
+      let points = [];
+      let deviceType = "unknown";
 
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = colorPicker.value;
+      // Phát hiện thiết bị
+      function detectDevice() {
+        const ua = navigator.userAgent;
+        if (/iPad/i.test(ua)) return "iPad";
+        if (/iPhone/i.test(ua)) return "iPhone";
+        if (/Android/i.test(ua)) return "Android";
+        if (/Mac/i.test(ua)) return "Mac";
+        if (/Windows/i.test(ua)) return "Windows";
+        return "Desktop";
+      }
+      deviceType = detectDevice();
+      deviceInfo.textContent = `Thiết bị: ${deviceType} | Hỗ trợ: Chuột, Touch, Apple Pencil`;
 
-    const getPos = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    };
+      // Resize canvas với devicePixelRatio cao
+      function resizeCanvas() {
+        const ratio = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * ratio;
+        canvas.height = rect.height * ratio;
+        ctx.scale(ratio, ratio);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = colorPicker.value;
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
 
-    const startDrawing = (e) => {
-      e.preventDefault();
-      isDrawing = true;
-      points.length = 0;
-      points.push(getPos(e));
-      ctx.beginPath();
-    };
+      // Lấy vị trí chính xác
+      const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+        const clientY = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top
+        };
+      };
 
-    const draw = (e) => {
-      if (!isDrawing) return;
-      e.preventDefault();
-      const pos = getPos(e);
-
-      // Pressure: bút stylus hoặc touch force, mặc định 0.5 cho chuột / touch thường
-      let pressure = 0.5;
-      if (e.pointerType === "pen" || e.pointerType === "touch") {
-        pressure = e.pressure || 0.5;
+      // Tính toán pressure thông minh
+      function calculatePressure(e) {
+        if (e.pointerType === "pen") {
+          // Apple Pencil hoặc stylus khác
+          const basePressure = e.pressure || 0.5;
+          return Math.max(0.2, Math.min(1.2, basePressure * 1.8));
+        } else if (e.pointerType === "touch") {
+          // Ngón tay - pressure trung bình
+          return e.pressure ? e.pressure * 1.3 : 0.7;
+        } else {
+          // Chuột - pressure cố định
+          return 0.8;
+        }
       }
 
-      ctx.lineWidth = parseInt(widthPicker.value) * pressure;
-      points.push(pos);
+      // Thuật toán vẽ mượt với Catmull-Rom spline (không dùng nữa - đã tích hợp vào draw)
+      function drawSmoothLine() {
+        // Hàm này giữ lại để tương thích, nhưng không dùng
+        return;
+      }
 
-      if (points.length >= 3) {
-        const p0 = points[points.length - 3];
-        const p1 = points[points.length - 2];
-        const p2 = points[points.length - 1];
-
-        const cpx = (p0.x + p1.x) / 2;
-        const cpy = (p0.y + p1.y) / 2;
-        const midx = (p1.x + p2.x) / 2;
-        const midy = (p1.y + p2.y) / 2;
-
+      const startDrawing = (e) => {
+        e.preventDefault();
+        isDrawing = true;
+        points = [];
+        const pos = getPos(e);
+        const pressure = calculatePressure(e);
+        const width = parseInt(widthPicker.value) * pressure;
+        points.push({ ...pos, width });
+        
         ctx.beginPath();
-        ctx.moveTo(cpx, cpy);
-        ctx.quadraticCurveTo(p1.x, p1.y, midx, midy);
-        ctx.stroke();
-      }
-    };
+        ctx.moveTo(pos.x, pos.y);
+      };
 
-    const stopDrawing = () => { isDrawing = false; points.length = 0; };
+      // Thuật toán vẽ mượt - vẽ trực tiếp trong quá trình draw
+      const draw = (e) => {
+        if (!isDrawing) return;
+        e.preventDefault();
+        
+        const pos = getPos(e);
+        const pressure = calculatePressure(e);
+        const baseWidth = parseInt(widthPicker.value);
+        const width = baseWidth * pressure;
+        const smoothFactor = parseInt(smoothnessPicker.value) / 10;
+        
+        points.push({ ...pos, width });
 
-    // Pointer events
-    canvas.addEventListener("pointerdown", startDrawing);
-    canvas.addEventListener("pointermove", draw);
-    canvas.addEventListener("pointerup", stopDrawing);
-    canvas.addEventListener("pointerleave", stopDrawing);
+        // Vẽ mượt ngay trong quá trình vẽ
+        if (points.length >= 2) {
+          const p1 = points[points.length - 2];
+          const p2 = points[points.length - 1];
+          
+          ctx.lineWidth = (p1.width + p2.width) / 2;
+          ctx.strokeStyle = colorPicker.value;
+          
+          if (points.length >= 3 && smoothFactor > 0.3) {
+            // Vẽ đường cong mượt với 3 điểm
+            const p0 = points[points.length - 3];
+            const cp1x = p1.x + (p2.x - p0.x) * smoothFactor * 0.25;
+            const cp1y = p1.y + (p2.y - p0.y) * smoothFactor * 0.25;
+            
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.quadraticCurveTo(cp1x, cp1y, p2.x, p2.y);
+            ctx.stroke();
+          } else {
+            // Vẽ đường thẳng
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      };
 
-    // Ngăn scroll / zoom khi touch
-    canvas.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
-    canvas.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+      const stopDrawing = (e) => {
+        if (!isDrawing) return;
+        e.preventDefault();
+        isDrawing = false;
+        points = [];
+      };
 
-    colorPicker.addEventListener("change", e => ctx.strokeStyle = e.target.value);
+      // Event listeners cho tất cả thiết bị
+      canvas.addEventListener("pointerdown", startDrawing);
+      canvas.addEventListener("pointermove", draw);
+      canvas.addEventListener("pointerup", stopDrawing);
+      canvas.addEventListener("pointerleave", stopDrawing);
+      canvas.addEventListener("pointercancel", stopDrawing);
 
-    document.getElementById("clear").addEventListener("click", () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    });
+      // Ngăn scroll/zoom trên mobile
+      canvas.addEventListener("touchstart", (e) => e.preventDefault(), { passive: false });
+      canvas.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+      canvas.addEventListener("touchend", (e) => e.preventDefault(), { passive: false });
 
-    document.getElementById("save").addEventListener("click", () => {
-      const dataUrl = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = "signature.png";
-      link.click();
-    });
-  </script>
-</body>
+      // Cập nhật màu
+      colorPicker.addEventListener("change", (e) => {
+        ctx.strokeStyle = e.target.value;
+      });
+
+      // Cập nhật giá trị hiển thị
+      widthPicker.addEventListener("input", (e) => {
+        widthValue.textContent = e.target.value;
+      });
+      smoothnessPicker.addEventListener("input", (e) => {
+        smoothValue.textContent = e.target.value;
+      });
+
+      // Xóa canvas
+      document.getElementById("clear").addEventListener("click", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      });
+
+      // Lưu ảnh
+      document.getElementById("save").addEventListener("click", () => {
+        // Tạo canvas mới với nền trắng
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+        const exportCtx = exportCanvas.getContext('2d');
+        
+        // Vẽ nền trắng
+        exportCtx.fillStyle = '#ffffff';
+        exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+        
+        // Vẽ chữ ký lên trên
+        exportCtx.drawImage(canvas, 0, 0);
+        
+        const dataUrl = exportCanvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `signature_${Date.now()}.png`;
+        link.click();
+      });
+    </script>
+  </body>
 </html>
